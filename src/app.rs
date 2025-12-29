@@ -1,5 +1,6 @@
 use std::collections::HashMap;
-use crate::todo::Todo;
+use crate::{FILE_PATH, file_checker, get_todos_from_file, todo::Todo};
+use std::fs;
 
 pub type Id = usize;
 
@@ -9,7 +10,8 @@ pub struct App {
 
 impl App {
     pub fn new() -> App {
-        let todos: HashMap<Id, Todo> = HashMap::new();
+        file_checker();
+        let todos = get_todos_from_file();
         App {
             todos,
         }
@@ -20,8 +22,13 @@ impl App {
     }
 
     pub fn add_todo(&mut self, todo: Todo) -> Id {
+        file_checker();
+        let mut todos = get_todos_from_file();
         let id = self.todos.len() + 1;
-        self.todos.insert(id, todo);
+        todos.insert(id, todo);
+        let update_file = serde_json::to_string_pretty(&todos).expect("Failed to serialize");
+        fs::write(FILE_PATH, update_file).expect("Failed to write todos.json");
+        // self.todos.insert(id, todo);
         id
     }
 

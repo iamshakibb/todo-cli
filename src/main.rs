@@ -2,7 +2,26 @@ use todo_cli::app::App;
 use run_cli::run_cli;
 
 mod run_cli {
-    mod add {}
+
+    mod add {
+        use anyhow::Result;
+        use clap::Parser;
+        use todo_cli::{app::{App}, todo};
+        #[derive(Parser)]
+        pub struct Args {
+            title: String,
+            #[arg(long)]
+            description: Option<String>
+        }
+
+        pub fn run(mut app:App, args: Args) -> Result<()>{
+            let Args { title, description } = args;
+            let id = app.todos.len() + 1;
+            let todo = todo::Todo{ id, title, description: description, is_completed: false };
+            app.add_todo(todo);
+            Ok(())
+        }
+    }
     mod delete {}
     mod complete {}
     mod cli_utils {
@@ -73,13 +92,14 @@ mod run_cli {
     enum Command {
         /// Lists all the tasks
         Ls(ls::Args),
+        Add(add::Args)
     }
 
     pub fn run_cli(app:App) -> Result<()> {
         let args = Args::parse();
         match args.command {
             Command::Ls(args) => ls::run(app,args),
-            // Command::Add(args) => add::run(args),
+            Command::Add(args) => add::run(app,args),
             // Command::Delete(args) => delete::run(args),
             // Command::Complete(args) => complete::run(args),
         }
