@@ -1,3 +1,4 @@
+pub mod cli;
 pub mod app;
 pub mod todo;
 use std::collections::HashMap;
