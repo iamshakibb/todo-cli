@@ -6,7 +6,6 @@ use crate::{app::{App}, todo};
 #[command(about = "Add a new todo task")]
 pub struct Args {
     /// Title of the todo task
-    #[arg(long, short = 't')]
     title: String,
     /// Optional description for the task
     #[arg(long,short = 'd')]
