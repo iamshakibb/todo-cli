@@ -1,11 +1,22 @@
 use serde::{Serialize, Deserialize};
+use tabled::{
+    Tabled,
+};
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Tabled)]
 pub struct Todo {
     pub id: usize,
     pub title: String,
+     #[tabled(display = "display_option")]
     pub description: Option<String>,
     pub is_completed: bool,
+}
+
+fn display_option(o: &Option<String>) -> String {
+    match o {
+        Some(s) => s.clone(),
+        None => "-".to_string(),
+    }
 }
 
 impl Todo {

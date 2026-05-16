@@ -6,21 +6,13 @@ mod ls;
 mod add;
 mod delete;
 mod complete;
-mod cli_utils {
-    use std::collections::HashMap;
-    use crate::{app::Id, todo::Todo};
-
-    pub fn print_todos (
-        todos: HashMap<Id, Todo>,
-        // show_description: bool,
-    ) {
-        println!("{}", serde_json::to_string(&todos).expect("Failed to serialize tasks to JSON"))
-    }
-}
+mod edit;
+mod cli_utils;
 
 
 #[derive(Parser)]
-#[command(author, version, about, long_about = None)]
+#[command(name = "todo-cli", author, version, about = "A simple command-line todo manager",
+    long_about = "A simple command-line todo manager for adding, listing, editing, completing, and deleting tasks.")]
 struct Args {
     #[command(subcommand)]
     command: Command,
@@ -30,9 +22,14 @@ struct Args {
 enum Command {
     /// Lists all the tasks
     Ls(ls::Args),
+    /// Add a new task
     Add(add::Args),
+    /// Delete a task by ID
     Delete(delete::Args),
+    /// Mark a task as completed
     Complete(complete::Args),
+    /// Edit an existing task
+    Edit(edit::Args),
 }
 
 pub fn run_cli(app:App) -> Result<()> {
@@ -42,5 +39,6 @@ pub fn run_cli(app:App) -> Result<()> {
         Command::Add(args) => add::run(app,args),
         Command::Delete(args) => delete::run(app,args),
         Command::Complete(args) => complete::run(app,args),
+        Command::Edit(args) => edit::run(app,args),
     }
 }

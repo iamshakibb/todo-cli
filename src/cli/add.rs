@@ -1,10 +1,15 @@
 use anyhow::Result;
 use clap::Parser;
 use crate::{app::{App}, todo};
+
 #[derive(Parser)]
+#[command(about = "Add a new todo task")]
 pub struct Args {
+    /// Title of the todo task
+    #[arg(long, short = 't')]
     title: String,
-    #[arg(long)]
+    /// Optional description for the task
+    #[arg(long,short = 'd')]
     description: Option<String>
 }
 

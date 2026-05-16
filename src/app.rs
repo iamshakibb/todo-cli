@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fs;
 
-use crate::{FILE_PATH, file_checker, get_todos_from_file, todo::Todo};
+use crate::{FILE_PATH, file_checker, get_todos_from_file, todo::{Todo}};
 
 pub type Id = usize;
 
@@ -64,6 +64,14 @@ impl App {
         todo.unwrap().toggle_completed();
         self.persist();
         // return immutable todo
+        self.get_todo(id)
+    }
+
+    pub fn update_todo(&mut self, id: Id, title:String, description: Option<String>) -> Option<&Todo> {
+        let todo = self.todos.get_mut(&id)?;
+        todo.title = title;
+        todo.description = description;
+        self.persist();
         self.get_todo(id)
     }
 
